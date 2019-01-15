@@ -864,7 +864,7 @@ elasticsearch 클러스터 운영
 -	index가 크고 보관기간이 길명 비용 부담이 증가
 -	최근 데이터를 더 자주 보는 경향을 이용한 매커니즘
 -	상대적으로 비용이 저렴, 고용량인 SATA 디스크를 이용
--	elasticsearch.yml, Template, Curator 를 이용하여 운영
+-	elasticsearch.yml, Template, Curator 를 이용하여 운영!
 
 <br><br><br><br><br>
 
