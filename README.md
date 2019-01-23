@@ -873,37 +873,50 @@ elasticsearch API 활용
 
 -	es는 여러가지 API를 두어 온라인 상의 사용이나 운영의 편이를 도모
 -	운영을 위해 클러스터 상태나 지표들을 볼 수 있는 모니터링 API
+-	클러스터의 설정을 변경할 수 있는 클러스터 설정변경 API
 -	데이터를 이관하거나 별칭을 달 수 있는 API 등
 
 <br><br>
 
 ### Cluster API - 클러스터 운영 API 다루기
 
+-	POST \_cluster/...
 -	운영중인 클러스터의 세팅정보 확인이나 온라인 상태로 설정을 변경할 수 있는 API
 -	자주 변경할 여지가 있는 사항들은 cluster api로 진행
 -	설정 모드는 두 가지로 나뉨
-	-	Transient: full cluster restart 시, reset되는 설정
+	-	Transient: full cluster restart 시, 리셋되는 설정
 	-	Persistent: 사용자 변경없으면, 영구 보존되는 설정, static setting보다 우선순위가 높음
 
 ### Reindex API - 데이터 마이그레이션
 
+-	POST \_reindex
+-	인덱스를 복제할 때 사용
+-	원본 인덱스의 세팅이나 매핑은 복제되지 않는다.
+-	클러스터 내부 뿐 아니라 외부 클러스터의 인덱스도 복제 가능
+
 ### Bulk API - 도큐먼트 한번에 인덱싱하기
 
-[링크: bulk API](https://www.elastic.co/guide/en/elasticsearch/reference/current/docs-bulk.html)
+-	인덱스문서의 인덱싱, 삭제, 업데이트를 벌크로 진행할 수 있는 API
+-	Java, Python, Perl 등 언어별로 bulk api 라이브러리 제공[링크: bulk API](https://www.elastic.co/guide/en/elasticsearch/reference/current/docs-bulk.html)
 
 ### 그 외 운영에 유용한 API
 
--	준비중
-
-.
-
-.
-
-.
+-	\_aliases API
+	-	인덱스에 별칭 부여하는 API
+	-	\_reindex API와 함께 자주 사용
+	-	존재하는 인덱스와 같은 이름으로는 설정 불가
+-	\_forcemerge API
+	-	segment를 강제로 병합하는 API
+	-	인덱싱 중인 인덱스에 사용은 비추!!!
+	-	인덱싱이 끝난 인덱스는 하나의 segment로 merge를 추천!!!
+	-	I/O 비용이 크기 때문에 인덱싱이나 검색이 없는 시간대에 진행
+-	\_open/close API
+	-	인덱스의 상태를 open/close 할 수 있는 API
+	-	close된 인덱스는 read/write 불가
+	-	클러스터 전체 샤드에서 제외
+	-	라우팅 disabled<img src="./pictures/close-api.png" width="600">
 
 <br><br><br><br><br><br><br><br><br><br>
-
----
 
 ---
 
@@ -1081,13 +1094,17 @@ Elasticsearch 색인 성능 최적화
 
 ### 필요하지 않다면 쓰지 말아야 할 기능들, \_all 필드
 
+-	준비중
+
 <br><br>
 
 ### 미리 정해놓은 스키마로 리소스를 절약할 수 있는 static mapping 적용하기
 
+-	준비중
+
 <br><br>
 
-###인덱싱 된 데이터를 검색 결과에 반영할 수 있도록 refresh_interval 변경하기<br><br>
+### 인덱싱 된 데이터를 검색 결과에 반영할 수 있도록 refresh_interval 변경하기<br><br>
 
 -	준비중
 
@@ -1099,6 +1116,7 @@ Elasticsearch 검색 성능 최적화
 ### 쿼리 튜닝 하기
 
 -	검색에 유리한 튜닝방법
+-	준비중
 
 .
 
@@ -1176,7 +1194,7 @@ Elasticsearch 검색 성능 최적화
 
 #### Rollover API
 
--	준비
+-	준비중
 
 .
 
