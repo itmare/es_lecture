@@ -9,10 +9,11 @@ elasticsearch 이론 정리중
 	-	[Elasticsearch에 대하여](https://github.com/itmare/es_lecture#elasticsearch%EC%97%90-%EB%8C%80%ED%95%98%EC%97%AC)
 	-	[Elasticsearch의 용어 및 개념 정리](https://github.com/itmare/es_lecture#elasticsearch-%EC%9A%A9%EC%96%B4-%EB%B0%8F-%EA%B0%9C%EB%85%90%EC%A0%95%EB%A6%AC)
 
--	**Elasticsearch 설치**
+-	[**Elasticsearch 설치**](https://github.com/itmare/es#elasticsearch-%EC%84%A4%EC%B9%98)
 
-	-	RPM, DEB로 설치하기
-	-	소스 코드로 설치하기
+	-	[repo 등록 설치](https://github.com/itmare/es#1-repo-%EB%93%B1%EB%A1%9D-%EC%84%A4%EC%B9%98)
+	-	[RPM으로 설치](https://github.com/itmare/es#2-rpm%EC%9C%BC%EB%A1%9C-%EC%84%A4%EC%B9%98)
+	-	[zip, tar로 설치](https://github.com/itmare/es#3-zip-tar%EB%A1%9C-%EC%84%A4%EC%B9%98)
 
 -	[**Elasticsearch 기본 동작**](https://github.com/itmare/es_lecture#elasticsearch-%EA%B8%B0%EB%B3%B8-%EB%8F%99%EC%9E%91)
 
