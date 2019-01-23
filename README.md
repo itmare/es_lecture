@@ -4,20 +4,20 @@ elasticsearch 이론 정리중
 
 ### Part 1. Elasticsearch 시작하기
 
--	**Elasticsearch 기본 개념**
+-	[**Elasticsearch 기본 개념**](https://github.com/itmare/es_lecture#part-1-elasticsearch-%EC%8B%9C%EC%9E%91%ED%95%98%EA%B8%B0-1)
 
-	-	Elasticsearch에 대하여
-	-	Elasticsearch의 용어 및 개념 정리
+	-	[Elasticsearch에 대하여](https://github.com/itmare/es_lecture#elasticsearch%EC%97%90-%EB%8C%80%ED%95%98%EC%97%AC)
+	-	[Elasticsearch의 용어 및 개념 정리](https://github.com/itmare/es_lecture#elasticsearch-%EC%9A%A9%EC%96%B4-%EB%B0%8F-%EA%B0%9C%EB%85%90%EC%A0%95%EB%A6%AC)
 
 -	**Elasticsearch 설치**
 
 	-	RPM, DEB로 설치하기
 	-	소스 코드로 설치하기
 
--	**Elasticsearch 기본 동작**
+-	[**Elasticsearch 기본 동작**](https://github.com/itmare/es_lecture#elasticsearch-%EA%B8%B0%EB%B3%B8-%EB%8F%99%EC%9E%91)
 
-	-	인덱스 생성 및 삭제, 조회
-	-	문서 색인 및 조회
+	-	[인덱스 생성 및 삭제, 조회](https://github.com/itmare/es_lecture#%EC%9D%B8%EB%8D%B1%EC%8A%A4-%EC%83%9D%EC%84%B1-%EB%B0%8F-%EC%82%AD%EC%A0%9C-%EC%A1%B0%ED%9A%8C)
+	-	[문서 색인 및 조회](https://github.com/itmare/es_lecture#%EB%AC%B8%EC%84%9C-%EC%83%89%EC%9D%B8-%EB%B0%8F-%EC%A1%B0%ED%9A%8C)
 	-	문서 갱신 및 삭제
 	-	클러스터 정보 확인하기
 
