@@ -1296,7 +1296,7 @@ PUT twitter
 
 ##### \*\*\* -1로 설정했음에도 refresh thread가 증가 하는 상황 \*\*\*
 
--	기본적으로 -1 설정은 bulk indexing 할때, refresh action을 수행하지 못하게 하기 위해
+-	기본적으로 -1 설정은 bulk indexing 할때, refresh action을 수행하지 못하게 하기 위해
 -	refresh thread 확인 (증가 시, mapping정보에서 dynamic field에 따른 template 구성이 영향을 줄 수 있음)
 -	dynamic field설정으로 indexing 할때, mapping정보가 바뀌게 되고 이를 반영 하기위해 IndexService가 updateMetaData()를 수행한다. 이 과정에서 자동으로 refresh가 발생하므로, bulk request 시, 어떤 구성을 하였는지 먼저 분석해야 한다.
 
