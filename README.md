@@ -72,8 +72,8 @@ elasticsearch 이론 정리중
 
 -	**Elasticsearch 검색 성능 최적화**
 
-	-	검색에 유리하도록 쿼리 튜닝하기
-	-	검색 성능을 위해 샤드 배치를 결정하는 노하우
+	-	쿼리 튜닝 하기: 검색에 유리한 튜닝방법
+	-	샤드 배치 결정하기: 검색 성능을 위해 샤드 배치를 결정하는 노하우
 
 -	**Elasticsearch 모니터링**
 
@@ -938,13 +938,18 @@ Elasticsearch 검색엔진 활용 및 성능 최적화와 모니터링
 -	인덱싱 필수 조건
 
 	-	프라이머리 샤드가 항상 먼저 writing 되야 한다.
-	-	primary shard의 writing이 전부 완료 되면, replica shrad 복제가 된다.
+	-	primary shard의 writing이 전부 완료 되면, replica shard 복제가 된다.
 
 -	Inverted Index
 
-	-	indexing되어 들어온 문서는 inverted index형태로 segment에 저장
+	-	인덱싱되어 들어온 문서는 inverted index형태로 segment에 저장
 	-	정의된 Analyzer에 의해 tokenizing된 단어를 기준으로 indexing
 	-	별도로 정의하지 않으면 기본 standard analyzer가 적용(언어 문법 기준 파싱) ![inverted_index](./pictures/inverted_index.png)
+	-	1. 문서가 들어오면 analyzer가 용어별로 나열
+	-	2. 용어가 몇번 들어왔는데 갯수 정리
+	-	3. 용어가 몇번 문서에 있는지 metadata형태로 저장
+	-	4. 세그먼트 저장되기 전에 버퍼에 저장되어있다가 리프래쉬되면 세그먼트에 쓰여진다.
+	-	한줄요약: analyzer가 문서가 들어오면 문서를 쪼개서 inverted index형태로 만든 후에 세그먼트로 저장
 
 ### 분석기 변경 방법
 
@@ -958,17 +963,20 @@ Elasticsearch 검색엔진 활용 및 성능 최적화와 모니터링
 
 		-	원본 text 가공
 		-	설정하지 않거나 다중으로 필터 설정 가능
+		-	ex) html 태그 제거, 패턴 매칭(123-456-789 ==> 123_456_789)
 
 	-	Tokenizer
 
 		-	어떤 방식으로 원본 text를 tokenizing 할지 결정
-		-	tokenizing 된 term은 **token** 이라 부름
-		-	하나의 tokenizer만 설정 가능 <br> ex) space가 기준일때: You are a boy!!! --> You / are / a / boy!!!
+		-	tokenizing 된 term은 token 이라 부름
+		-	하나의 tokenizer만 설정 가능
+		-	ex) space가 기준일때: You are a boy!!! ==> You / are / a / boy!!!
 
 	-	Token filters
 
 		-	tokenizer에 의해 결정된 koten들에 대한 가공
-		-	설정하지 않거나 다중으로 필터 설정 가능 <br> ex) stopword제거: You / are / a / boy --> you / boy
+		-	설정하지 않거나 다중으로 필터 설정 가능
+		-	ex) stopword제거: You / are / a / boy ==> you / boy
 
 -	Analyzer
 
@@ -987,7 +995,7 @@ Elasticsearch 검색엔진 활용 및 성능 최적화와 모니터링
 	-	[Tokenizer](https://www.elastic.co/guide/en/elasticsearch/reference/6.4/analysis-tokenizers.html)
 	-	[Token filters](https://www.elastic.co/guide/en/elasticsearch/reference/6.4/analysis-tokenfilters.html)
 
-<br><br>
+<br><br><br><br>
 
 ### 쿼리 생성
 
@@ -1000,6 +1008,7 @@ Elasticsearch 검색엔진 활용 및 성능 최적화와 모니터링
 	-	Fetch: 문서를 가져온다.
 
 ```shell
+# example
 GET /_search
 {
 	"from": 90,
@@ -1023,15 +1032,18 @@ GET /_search
 #### Fetch phase of distributed search
 
 -	리턴 받은 document ID를 기준으로 관련된 shard에 multi GET 요청
--	노드별로 리턴받은 문서를 클라이언트에게 리턴 ![search_fetch](./pictures/search_fetch.png)
--	coordinating node(`node 3`)은 어떤 document가 fetch되는지를 확인하고, multi GET 요청을 적절한 shard에 발행한다.
--	각 shard는 document를 로드하고, 그 doccument들을 *enriches* 한다. 그러고나섯 필요시, document들을 coordinating node에 리턴한다.
--	모든 document가 fetch되고, coordinating node는 결과를 client에게 리턴한다.
+-	노드별로 리턴받은 문서를 클라이언트에게 리턴
+
+![search_fetch](./pictures/search_fetch.png)
+
+1.	coordinating node(`node 3`)은 어떤 document가 fetch되는지를 확인하고, multi GET 요청을 적절한 shard에 발행한다.
+2.	각 shard는 document를 로드하고, 그 document들을 *enriches* 한다. 그러고나섯 필요시, document들을 coordinating node에 리턴한다.
+3.	모든 document가 fetch되고, coordinating node는 결과를 client에게 리턴한다.
 
 #### URL search
 
--	URL에 request parameters를 통해 검색 절의
--	한정된 검색 옵셔난 사용 가능 (Quick Test)
+-	URL에 request parameters를 통해 검색 질의
+-	한정된 검색 옵션만 사용 가능 (Quick Test)
 -	ex) `GET bank/_search?from=0&size=100&q=address:Fleet&sort=age:asc`
 -	[URL search에 대한 더 많은 정보](https://www.elastic.co/guide/en/elasticsearch/reference/current/search-uri-request.html)
 
@@ -1044,6 +1056,8 @@ GET /_search
 -	(from + size)가 기본으로는 10000까지만 허용
 -	더 필요하면 index.max_result_window 조정 필요
 -	[Request Body Search에 대한 더 많은 정보](https://www.elastic.co/guide/en/elasticsearch/reference/current/search-request-body.html)
+
+<br><br><br><br>
 
 ### Query DSL (Domain Specific Language)
 
@@ -1091,48 +1105,253 @@ GET /_search
 Elasticsearch 색인 성능 최적화
 ------------------------------
 
-<br>
-
-### 필요하지 않다면 쓰지 말아야 할 기능들, \_all 필드
-
--	준비중
+-	색인은 I/O job
+-	es에서 기본으로 제공하는 색인 기능 중 불필요 기능 제거
+-	인덱스 mapping스키마를 미리 적절히 정의하는 것만으로도 성능 향상
+-	니즈에 따라 데이터 제공 패턴을 변경하여 성능 향상
 
 <br><br>
 
 ### 미리 정해놓은 스키마로 리소스를 절약할 수 있는 static mapping 적용하기
 
--	준비중
+-	Mapping
+	-	문서가 인덱싱 될때 문서와 문서에 포함된 필드들을 어떻게 저장할지를 결정하는 과정
+	-	string에 대해 text field로 쓸지, keyword field로 쓸지
+	-	numeric type은 short field로 쓸지, log field로 쓸지
+	-	date type은 어떻게 정의해서 쓸지
+-	Field Datatype
+	-	field type: text, keyword, date, long, double, boolean ...
+-	[참고](https://www.elastic.co/guide/en/elasticsearch/reference/current/mapping-types.html)
+
+#### 1. text field type
+
+-	email본문 같은 full-text로 인덱싱 되는 필드타입
+-	분석기를 통해 단어로 검색 가능하도록 인덱싱됨
+-	sorting에 사용되지 않음
+-	aggregation에 거의 사용되지 않음
+
+```shell
+PUT text_index
+{
+	"mappings":{
+		"_doc":{
+			"properties":{
+				"title":{
+					"type": "text"
+				}
+			}
+		}
+	}
+}
+```
+
+<br>
+
+#### 2. keyword field type
+
+-	email 주소나 호스트 네임같은 구조화된 컨텐츠로 인덱싱되는 필드 타입
+-	Analyze 되지 않음
+-	sorting, aggregation 지원
+-	Exact value로만 검색된다.
+
+```shell
+PUT keyword_index
+{
+	"mappings": {
+		"_doc":{
+			"properties:"{
+				"title":{
+					"type": "keyword"
+				}
+			}
+		}
+	}
+}
+```
+
+<br>
+
+-	Aggregation?
+	-	검색 쿼리에 의해 집계/통계를 내는 프레임 워크
+	-	메일 본문같은 긴 내용은 집계/통계를 내기 어려운 데이터
+	-	수치나 특정 문자로 한정된 데이터들의 집계를 내는 역할
+	-	kibana에서 집계/통계를 낼 때 주로 사용
 
 <br><br>
 
-### 인덱싱 된 데이터를 검색 결과에 반영할 수 있도록 refresh_interval 변경하기<br><br>
+##### text vs. keyword
 
--	준비중
+-	dyanmic mapping으로 string이 들어오면 text와 keyword 둘 다 사용 가능
+-	fields로 sub field 세팅
+-	sub field는 test.keyword로 질의
+-	인덱싱 될 때 text는 analyzer를 거치게 된다.
+-	keyword로 사용할 의도였다면 이러한 분석은 낭비
+-	keyword로 사용할 string이라면 keyword type으로 매핑
+
+| 항목             | text   | keyword |
+|:----------------:|:------:|:-------:|
+|      input       | String | String  |
+|     analyze      |   O    |    X    |
+| Full-text Search |   O    |    X    |
+|     Sorting      |   X    |    O    |
+|   Aggregation    |   X    |    O    |
+
+<br>
+
+#### 3. date field type
+
+-	형식이 지정된 날짜가 포함 된 문자열 (ex: "2019/01/01 01:14:15")
+-	milliseconds를 나타내는 epoch_millis (ex: 1546305255000)
+-	허용할 타입만 지정 또한 가능하다.
+
+```shell
+PUT date_index
+{
+	"mapping": {
+		"_doc":{
+			"properties":{
+				"date":{
+					"type": "date"
+				}
+			}
+		}
+	}
+}
+```
+
+<br>
+
+#### 4. Numeric field type
+
+-	숫자 형식의 필드 타입
+-	적절하게 맞추면 좋으나 동일 타입으로 통일을 권고
+-	dynamic 매핑은 long
+
+| Value Type   | Supported                                      |
+|:------------:|:----------------------------------------------:|
+|     long     |        64-bit integer (-2^63 ~ 2^63-1)         |
+|   integer    |        32-bit integer (-2^31 ~ 2^31-1)         |
+|    short     |       16-bit integer (-32,768 ~ 32,767)        |
+|     byte     |           8-bit integer (-128 ~ 127)           |
+| double/float | 64-bit \ 32-bit IEEE 754 floating point number |
+
+<br>
+
+### hierachiacl nature of JSON field type
+
+-	object 나 list같이 게층구조의 데이터는 properties 라 불리는 서브 필드에 포함된다.
+-	properties는 서브필드로 활용
+-	매핑을 정의해서 인덱스를 만들때
+-	매핑타입을 추가할 때
+-	매핑을 정의하지 않고 문서를 인덱싱 할 때 Elasticsearch가 dynamic하게 매핑을 정의할 때
+
+#### 5. object field type
+
+-	`object` for single JSON objects
+
+#### 6. nested field type
+
+-	`nested` for arrays of JSON objects
+-	`nested`로 정의한 매핑은 인덱싱이 되는 순간 다시 dynamic mapping으로 인덱싱
+-	static mapping으로 별도 지정
+
+<br><br><br>
+
+### 필요하지 않다면 쓰지 말아야 할 기능들, \_all 필드
+
+-	도큐먼트의 모든 필드의 value를 합쳐서 인덱싱하는 필드
+-	검색할 때 사용되며, 세그먼트에 저장되지는 않지만 힙 영역에 올라가는 데이터
+-	text field로 analyze 되는 필드 (text field로 저장됨)
+-	6.0부터 deprecated (가급적 안쓰는게 좋음)
+-	\_all field를 5버전 이하에서 사용한다면 disable 권고
+-	탬플릿에 `_default_`type을 통해 전체 인덱스 disable
+-	key/value 형태로 저장해서 검색하는 걸 권고
+
+```json
+PUT twitter
+{
+	"mappings":{
+		"_default_":{
+			"_all":{
+				"enabled":false
+			}
+		}
+	}
+}
+```
+
+<br><br>
+
+### 인덱싱 된 데이터를 검색 결과에 반영할 수 있도록 refresh_interval 변경하기
+
+-	메모리 캐시 버퍼 영역으로부터 세그먼트에 도큐먼트를 저장하는 주기
+-	refresh가 되어, 저장된 도큐먼트는 검색 가능한 상태로 변경된다.
+-	온라인상에서 인덱스별 세팅 가능
+-	-1로 설정하면 disable, null로 설정하면 1s로 초기화
+-	주로 bulk indexing할 때 -1로 설정하고 사용
+-	interval을 길게 가져갈수록 I/O 빈도가 낮아져 성능 향상
+-	메모리 버퍼의 용량을 고려하여 interval을 설정
+
+<br>
+
+##### \*\*\* -1로 설정했음에도 refresh thread가 증가 하는 상황 \*\*\*
+
+-	기본적으로 -1 설정은 bulk indexing 할때, refresh action을 수행하지 못하게 하기 위해
+-	refresh thread 확인 (증가 시, mapping정보에서 dynamic field에 따른 template 구성이 영향을 줄 수 있음)
+-	dynamic field설정으로 indexing 할때, mapping정보가 바뀌게 되고 이를 반영 하기위해 IndexService가 updateMetaData()를 수행한다. 이 과정에서 자동으로 refresh가 발생하므로, bulk request 시, 어떤 구성을 하였는지 먼저 분석해야 한다.
+
+<br><br>
+
+### 그밖의 색인 성능 최적화
+
+#### Document id 없이 POST로 인덱싱 권고
+
+-	PUT을 통해 doc id를 설정한 채로 인덱싱을 할때 es는 해당 id의 문서가 있는지 먼저 체크
+-	문서가 많아질수록, 인덱스가 커질수록 해당 부하가 커짐
+
+#### Bulk Indexing 활용 권고
+
+-	가능하면 단일 인덱싱 요청보다는 한번에 많은 문서를 Bulk indexling하는것이 더 효율적
+-	단일 노드, 단일 샤드 환경에서 적절한 bulk size 측정 후 진행 권고
+-	request reject나 gc상황을 봐가며 적정 수치 확인
 
 <br><br><br><br>
 
 Elasticsearch 검색 성능 최적화
 ------------------------------
 
-### 쿼리 튜닝 하기
+### 쿼리 튜닝 하기: 검색에 유리한 튜닝방법
 
--	검색에 유리한 튜닝방법
--	준비중
+-	numeric field에 대해 keyword field로 인덱싱 고려
+	-	검색과 range필드 쿼리는 가능
+	-	집계 등의 수치 계산 불가능
+-	wildcard 사용에 대해 충분히 검토 필요
+	-	token으로 분리되는 용어는 wildcard 대신 match를 써도 충분
+-	exact match 검색을 할때에는 match 대신 term쿼리 사용
+	-	불필요한 analyze를 제외하여 성능 향
+-	query context와 filter context를 적절히 활용
+	-	filter context쿼리는 스코어가 의미가 없는 쿼리
+	-	filter절에 넣어 스코어를 계산하는 단계를 없애면 성능 향상
+-	bool 쿼리는 쿼리가 정이된 순서대로 실행
+	-	최상단에 정의된 쿼리에 결과 범위를 가장 좁힐 수 있는 쿼리를 두는게 좋다.
 
-.
+<br>
 
-.
+-	서비스 전, 쿼리 캐시 warm-up
 
-.
+	-	처음 로딩되는 데이터는 heap에 올라와있지 않다면 버퍼 캐시에 데이터가 있는지 확인
+	-	버퍼캐시에도 없다면 디스크에 저장된 segment를 찾아 heap에 데이터를 올리고 리턴
+	-	자주 사용되는 쿼리가 짐작된다면 서비스 전에 미리 쿼리를 날려두어 heap에 데이터를 로딩
+	-	전체 데이터가 로딩될 만큼 힙 사이즈가 크다면 와일드카드 쿼리로 전체 데이터를 로딩
 
-### 샤드 배치 결정하기
+<br><br>
 
-#### 검색성능을 위해 샤드를 배치하는 노하우
+### 샤드 배치 결정하기: 검색성능을 위해 샤드를 배치하는 노하우
 
 -	**한번 설정한 샤드 갯수는 변경 불가**
 	-	처음부터 샤드 갯수를 잘 설정해야 클러스터 성능이 좋아짐
 -	샤드 갯수 결정 시, 고려해야 할 점
-	1.	**인덱스가 생성될 때, 전 체 노드가 인덱싱과 검색에 참여할 수 있는가?**
+	1.	**인덱스가 생성될 때, 전체 노드가 인덱싱과 검색에 참여할 수 있는가?**
 		-	분산처리를 위해 샤드가 노드에 고루 분배되어야 함
 		-	노드 갯수의 배수로 샤드 갯수를 가져가면 노드 별 용량도 비숫하게 수렴됨
 	2.	**하나의 데이터 노드에 적당한 샤드 갯수가 저장되도록 설계되었는가?**
@@ -1255,3 +1474,101 @@ ELK 스택으로 활용하기 Elasticsearch 모니터링
 .
 
 .
+
+.
+
+.
+
+.
+
+.
+
+.
+
+.
+
+.
+
+.
+
+.
+
+<br><br><br><br><br>
+
+추가자료
+========
+
+Per-License Supports
+--------------------
+
+-	For more details on [HERE](https://www.elastic.co/subscriptions)
+
+<img src="./pictures/option-by-license.png" width="700">
+
+<br><br>
+
+About Mapping type and deprecated
+---------------------------------
+
+-	[링크](https://www.elastic.co/guide/en/elasticsearch/reference/current/removal-of-types.html#_why_are_mapping_types_being_removed)
+
+### mapping type은 무엇인가?
+
+-	es가 릴리즈된 이래에서, 각 document는 single index에 저장되었고, single mapping type에 할당되었다.
+-	mapping type document의 type 또는 인덱스된 entity를 표현하는데 사용되었다. 예를들어 `twitter` index는 `user` type과 `tweet` type을 가진다.
+-	각각의 mapping type은 그것들이 소유한 field를 가질 수 있고,
+	-	`user` type은 `full_name`, `user_name` 그리고 `email` field를 가질 수 있고
+	-	`tweet` type은 `content`, `tweeted_at` 그리고 `user_name` field(`user` type의 것과 같이) 가질 수 있다.
+-	각 document는 type name을 포함하는 `_type` meta-field를 가지고, searches는 URL에 있는 type name을 명시함으로써 하나이상의 type으로 제한 될 수 있다.
+
+```shell
+GET twitter/user,tweet/_search
+{
+  "query": {
+    "match": {
+      "user_name": "kimchy"
+    }
+  }
+}
+```
+
+-	`_type` field는 `_uid` field를 생성하기 위해 document의 `_id`와 결합되고, 같은 `_id`와 함께 다른 type의 document들은 single index에 존재할 수 있다.
+-	mapping type은 또한 document간에 [parent-child relationship](https://www.elastic.co/guide/en/elasticsearch/reference/current/mapping-parent-field.html)을 만들수 있고, type `question`의 document들은 type `answer`의 document들의 부모일 수 있다.
+
+<br><br><br>
+
+### 왜 mapping type이 제거될 예정인가?
+
+-	일반적으로 index는 database, type은 table과 비슷하다고들 말한다.
+-	그렇지만, 이건 정확한 설명이 될 수 없다.
+-	sql db에서 table은 서로 독립적이다.
+-	한 table에 있는 column은 다른 table의 같은이름을 가진 column과 관련을 가지고 있지 않다.
+-	이것은 mapping type에서 field와는 다른 경우이다.
+
+<br>
+
+-	같은 index내에서 \_type이 다르더라도 같은 이름의 field를 갖는다면, 루신의 특징에 의해 내부적으로 하나의 field로 관리된다.
+-	다른 mapping type에서 같은 이름을 가진 field들은 내부적으로 같은 루씬 field의 도움을 받는다.
+-	위에서, 각각의 `user_name`field는 하나로 mapping된다. (table은 각자 따로 저장됨)
+-	`user` type에서 `user_name` 데이터를 바꾸거나 타입을 바꾸면, 문제가 될 수 있다.
+-	공통 field가 별로 없는 데이터를 하나의 index에 넣는 것은 효율적으로 document를 압축시키지 못한다.
+-	이런 이유로, elastic은 es로부터 mapping type의 컨셉을 제거하기로 결정
+
+<img src="./pictures/type-deprecated.png" width="900">
+
+<br><br><br>
+
+### 대처 방안
+
+#### 1. type별로 index생성
+
+-	type별로 index를 생성하면, 기존의 방식보다 루신의 데이터 압축이 잘 되는 장점
+-	tweets와 users데이터를 `twitter` index에 저장했던거와 다르게, 각각의 인덱스에 저장
+-	각각의 인덱스는 완벽하게 서로 독립적이기 때문에 인덱스간 field type의 충돌걱정은 할필요 없다.
+-	두가지 benefits
+	-	data는 루씬에서 사용된 압축기술의 장점을 얻을 수 있다.
+	-	full-text search에서 스코어링을 위해 사용된 term관련 통계가 더 정확할 것이다. (왜냐하면 같은 index에 있는 모든 documents가 싱글 entity를 표현한다.)
+
+#### 2. custom type
+
+-	기존에 사용하던 `_type`을 사용하지 않고, 각 document별로 docType과 같이 type을 구분할 수 있는 field를 넣어준다.
