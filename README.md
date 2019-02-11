@@ -87,12 +87,6 @@ elasticsearch 이론 정리중
 	-	성능 테스트 환경
 	-	성능 테스트 결과 해석
 
--	**운영에 도움을 주는 오픈소스 툴**
-
-	-	인덱스 데이터를 마이그레이션 할 수 있는 elasticdump
-	-	쉽게 배포하고, 쉽게 작업할 수 있는 ansible
-	-	한 순간도 놓치지 않고 모니터링 할 수 있는 외부 notification pusher 사용
-
 <br><br><br><br><br><br>
 
 ---
