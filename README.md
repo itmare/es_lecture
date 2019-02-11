@@ -19,7 +19,7 @@ elasticsearch 이론 정리중
 
 	-	[인덱스 생성 및 삭제, 조회](https://github.com/itmare/es_lecture#%EC%9D%B8%EB%8D%B1%EC%8A%A4-%EC%83%9D%EC%84%B1-%EB%B0%8F-%EC%82%AD%EC%A0%9C-%EC%A1%B0%ED%9A%8C)
 	-	[문서 색인 및 조회](https://github.com/itmare/es_lecture#%EB%AC%B8%EC%84%9C-%EC%83%89%EC%9D%B8-%EB%B0%8F-%EC%A1%B0%ED%9A%8C)
-	-	문서 갱신 및 삭제
+	-	[문서 갱신 및 삭제](https://github.com/itmare/es#%EB%AC%B8%EC%84%9C-%EA%B0%B1%EC%8B%A0-%EB%B0%8F-%EC%82%AD%EC%A0%9C)
 	-	클러스터 정보 확인하기
 
 -	**Elasticsearch 플러그인**
