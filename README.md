@@ -20,72 +20,71 @@ elasticsearch 이론 정리중
 	-	[인덱스 생성 및 삭제, 조회](https://github.com/itmare/es_lecture#%EC%9D%B8%EB%8D%B1%EC%8A%A4-%EC%83%9D%EC%84%B1-%EB%B0%8F-%EC%82%AD%EC%A0%9C-%EC%A1%B0%ED%9A%8C)
 	-	[문서 색인 및 조회](https://github.com/itmare/es_lecture#%EB%AC%B8%EC%84%9C-%EC%83%89%EC%9D%B8-%EB%B0%8F-%EC%A1%B0%ED%9A%8C)
 	-	[문서 갱신 및 삭제](https://github.com/itmare/es#%EB%AC%B8%EC%84%9C-%EA%B0%B1%EC%8B%A0-%EB%B0%8F-%EC%82%AD%EC%A0%9C)
-	-	클러스터 정보 확인하기
 
--	**Elasticsearch 플러그인**
+-	[**Elasticsearch 플러그인**](https://github.com/itmare/es_lecture#elasticsearch-%ED%94%84%EB%9F%AC%EA%B7%B8%EC%9D%B8)
 
 	-	플러그인이란?
 	-	플러그인의 설치
-	-	한눈에 클러스터를 보기 위한 head 플러그인 활용
-	-	클러스터의 사용률을 보기 위한 HQ 플러그인 활용
+	-	[한눈에 클러스터를 보기 위한 head 플러그인 활용](https://github.com/itmare/es#elasticsearch-head)
+	-	[클러스터의 사용률을 보기 위한 HQ 플러그인 활용](https://github.com/itmare/es#elasticsearch-hq)
 
 <br>
 
 ### Part 2. Elasticsearch Basic Usage
 
--	**Elasticsearch 환경 설정 (실습)**
+-	[**Elasticsearch 환경 설정**](https://github.com/itmare/es_lecture#elasticsearch-%ED%99%98%EA%B2%BD%EC%84%A4%EC%A0%95)
 
-	-	Elasticsearch의 핵심인 elasticsearch.yml 설정
-	-	힙사이즈의 중요성, jvm.options
-	-	로그를 어떻게 모을 것인지 설정하는 log4j2.properties
+	-	[Elasticsearch의 핵심인 elasticsearch.yml 설정](https://github.com/itmare/es_lecture#1-static-settings-elasticsearchyml)
+	-	[힙사이즈의 중요성, jvm.options](https://github.com/itmare/es_lecture#2-static-settings-jvmoptions)
+	-	[로그를 어떻게 모을 것인지 설정하는 log4j2.properties](https://github.com/itmare/es_lecture#3-static-settings-log4j2properties)
 
 -	**Elasticsearch 클러스터 운영**
 
-	-	무중단 운영을 위한 rolling restart
-	-	안정적인 성능 제공을 위한 샤드 분배 방법
-	-	index setting
-	-	미리 정의된 template으로 인덱싱하기
-	-	비용을 절감하는 운영 방법 hot-warm data node
+	-	[무중단 운영을 위한 rolling restart](https://github.com/itmare/es_lecture#rolling-restart)
+	-	[안정적인 성능 제공을 위한 샤드 분배 방법](https://github.com/itmare/es_lecture#shard-allocation)
+	-	[index setting](https://github.com/itmare/es_lecture#index-setting)
+	-	[미리 정의된 template으로 인덱싱하기](https://github.com/itmare/es_lecture#template)
+	-	[비용을 절감하는 운영 방법 hot-warm data node](https://github.com/itmare/es_lecture#hot-warm-data-node)
 
 -	**Elasticsearch API 활용하기**
 
-	-	클러스터 운영 \_cluster API
-	-	클러스터 인덱스 마이그레이션 \_reindex API
-	-	벌크 인덱싱 \_bulk API
-	-	그 외 운영에 유용한 APIs
+	-	[클러스터 운영 \_cluster API](https://github.com/itmare/es_lecture#cluster-api---%ED%81%B4%EB%9F%AC%EC%8A%A4%ED%84%B0-%EC%9A%B4%EC%98%81-api-%EB%8B%A4%EB%A3%A8%EA%B8%B0)
+	-	[클러스터 인덱스 마이그레이션 \_reindex API](https://github.com/itmare/es_lecture#reindex-api---%EB%8D%B0%EC%9D%B4%ED%84%B0-%EB%A7%88%EC%9D%B4%EA%B7%B8%EB%A0%88%EC%9D%B4%EC%85%98)
+	-	[벌크 인덱싱 \_bulk API](https://github.com/itmare/es_lecture#bulk-api---%EB%8F%84%ED%81%90%EB%A8%BC%ED%8A%B8-%ED%95%9C%EB%B2%88%EC%97%90-%EC%9D%B8%EB%8D%B1%EC%8B%B1%ED%95%98%EA%B8%B0)
+	-	[그 외 운영에 유용한 APIs](https://github.com/itmare/es_lecture#%EA%B7%B8-%EC%99%B8-%EC%9A%B4%EC%98%81%EC%97%90-%EC%9C%A0%EC%9A%A9%ED%95%9C-api)
 
 <br>
 
 ### Part 3. Elasticsearch Advanced Usage
 
--	**검색엔진으로 Elasticsearch 활용하기**
+-	[**검색엔진으로 Elasticsearch 활용하기**](https://github.com/itmare/es_lecture#%EA%B2%80%EC%83%89%EC%97%94%EC%A7%84%EC%9C%BC%EB%A1%9C-elasticsearch-%ED%99%9C%EC%9A%A9%ED%95%98%EA%B8%B0)
 
-	-	인덱스 생성 과정
-	-	분석기 변경 방법
-	-	쿼리 생성
+	-	[인덱스 생성 과정](https://github.com/itmare/es_lecture#%EC%9D%B8%EB%8D%B1%EC%8A%A4-%EC%83%9D%EC%84%B1-%EA%B3%BC%EC%A0%95)
+	-	[분석기 변경 방법](https://github.com/itmare/es_lecture#%EB%B6%84%EC%84%9D%EA%B8%B0-%EB%B3%80%EA%B2%BD-%EB%B0%A9%EB%B2%95)
+	-	[쿼리 생성](https://github.com/itmare/es_lecture#%EC%BF%BC%EB%A6%AC-%EC%83%9D%EC%84%B1)
 
--	**Elasticsearch 색인 기능 최적화**
+-	[**Elasticsearch 색인 기능 최적화**](https://github.com/itmare/es_lecture#elasticsearch-%EC%83%89%EC%9D%B8-%EC%84%B1%EB%8A%A5-%EC%B5%9C%EC%A0%81%ED%99%94)
 
-	-	필요하지 않다면 쓰지 말아야 할 기능들, \_all 필드
-	-	미리 정해놓은 스키마로 리소스를 절약할 수 있는 static mapping 적용하기
-	-	인덱싱 된 데이터를 검색 결과에 반영할 수 있도록 refresh_interval 변경하기
+	-	[필요하지 않다면 쓰지 말아야 할 기능들, \_all 필드](https://github.com/itmare/es_lecture#%ED%95%84%EC%9A%94%ED%95%98%EC%A7%80-%EC%95%8A%EB%8B%A4%EB%A9%B4-%EC%93%B0%EC%A7%80-%EB%A7%90%EC%95%84%EC%95%BC-%ED%95%A0-%EA%B8%B0%EB%8A%A5%EB%93%A4-_all-%ED%95%84%EB%93%9C)
+	-	[미리 정해놓은 스키마로 리소스를 절약할 수 있는 static mapping 적용하기](https://github.com/itmare/es_lecture#%EB%AF%B8%EB%A6%AC-%EC%A0%95%ED%95%B4%EB%86%93%EC%9D%80-%EC%8A%A4%ED%82%A4%EB%A7%88%EB%A1%9C-%EB%A6%AC%EC%86%8C%EC%8A%A4%EB%A5%BC-%EC%A0%88%EC%95%BD%ED%95%A0-%EC%88%98-%EC%9E%88%EB%8A%94-static-mapping-%EC%A0%81%EC%9A%A9%ED%95%98%EA%B8%B0)
+	-	[인덱싱 된 데이터를 검색 결과에 반영할 수 있도록 refresh_interval 변경하기](https://github.com/itmare/es_lecture#%EC%9D%B8%EB%8D%B1%EC%8B%B1-%EB%90%9C-%EB%8D%B0%EC%9D%B4%ED%84%B0%EB%A5%BC-%EA%B2%80%EC%83%89-%EA%B2%B0%EA%B3%BC%EC%97%90-%EB%B0%98%EC%98%81%ED%95%A0-%EC%88%98-%EC%9E%88%EB%8F%84%EB%A1%9D-refresh_interval-%EB%B3%80%EA%B2%BD%ED%95%98%EA%B8%B0)
 
--	**Elasticsearch 검색 성능 최적화**
+-	[**Elasticsearch 검색 성능 최적화**](https://github.com/itmare/es_lecture#elasticsearch-%EA%B2%80%EC%83%89-%EC%84%B1%EB%8A%A5-%EC%B5%9C%EC%A0%81%ED%99%94)
 
-	-	쿼리 튜닝 하기: 검색에 유리한 튜닝방법
-	-	샤드 배치 결정하기: 검색 성능을 위해 샤드 배치를 결정하는 노하우
+	-	[쿼리 튜닝 하기: 검색에 유리한 튜닝방법](https://github.com/itmare/es_lecture#%EC%BF%BC%EB%A6%AC-%ED%8A%9C%EB%8B%9D-%ED%95%98%EA%B8%B0-%EA%B2%80%EC%83%89%EC%97%90-%EC%9C%A0%EB%A6%AC%ED%95%9C-%ED%8A%9C%EB%8B%9D%EB%B0%A9%EB%B2%95)
+	-	[샤드 배치 결정하기: 검색 성능을 위해 샤드 배치를 결정하는 노하우](https://github.com/itmare/es_lecture#%EC%83%A4%EB%93%9C-%EB%B0%B0%EC%B9%98-%EA%B2%B0%EC%A0%95%ED%95%98%EA%B8%B0-%EA%B2%80%EC%83%89%EC%84%B1%EB%8A%A5%EC%9D%84-%EC%9C%84%ED%95%B4-%EC%83%A4%EB%93%9C%EB%A5%BC-%EB%B0%B0%EC%B9%98%ED%95%98%EB%8A%94-%EB%85%B8%ED%95%98%EC%9A%B0)
 
--	**Elasticsearch 모니터링**
+-	[**Elasticsearch 모니터링**](https://github.com/itmare/es_lecture#elasticsearch-%EB%AA%A8%EB%8B%88%ED%84%B0%EB%A7%81)
 
-	-	rejected, 데이터의 누락이 발생하는 순간
-	-	\_cat API로 클러스터 상태 모니터링 하기
-	-	\_stats, \_nodes API로 클러스터의 리소스 사용 지표 모니터링 하기
+	-	[rejected, 데이터의 누락이 발생하는 순간](https://github.com/itmare/es_lecture#rejected-%EB%8D%B0%EC%9D%B4%ED%84%B0%EC%9D%98-%EB%88%84%EB%9D%BD%EC%9D%B4-%EB%B0%9C%EC%83%9D%ED%95%98%EB%8A%94-%EC%88%9C%EA%B0%84)
+	-	[\_cat API로 클러스터 상태 모니터링 하기](https://github.com/itmare/es_lecture#_cat-api%EB%A1%9C-%ED%81%B4%EB%9F%AC%EC%8A%A4%ED%84%B0-%EC%83%81%ED%83%9C-%EB%AA%A8%EB%8B%88%ED%84%B0%EB%A7%81-%ED%95%98%EA%B8%B0)
+	-	[\_stats, \_nodes API로 클러스터의 리소스 사용 지표 모니터링 하기](https://github.com/itmare/es_lecture#_stats-_nodes-api%EB%A1%9C-%ED%81%B4%EB%9F%AC%EC%8A%A4%ED%84%B0%EC%9D%98-%EB%A6%AC%EC%86%8C%EC%8A%A4-%EC%82%AC%EC%9A%A9-%EC%A7%80%ED%91%9C-%EB%AA%A8%EB%8B%88%ED%84%B0%EB%A7%81-%ED%95%98%EA%B8%B0)
 
 -	**Elasticsearch 성능 테스트**
 
-	-	‘어떻게 해야 정확한 성능을 테스트할 수 있을까?’ 시나리오 만들기
-	-	성능 테스트 환경
-	-	성능 테스트 결과 해석
+	-	[성능 테스트 시나리오](https://github.com/itmare/es_lecture#%EC%84%B1%EB%8A%A5-%ED%85%8C%EC%8A%A4%ED%8A%B8-%EC%8B%9C%EB%82%98%EB%A6%AC%EC%98%A4)
+	-	[성능 테스트 환경](https://github.com/itmare/es_lecture#%EC%84%B1%EB%8A%A5-%ED%85%8C%EC%8A%A4%ED%8A%B8-%ED%99%98%EA%B2%BD)
+	-	[성능 테스트 결과 해석](https://github.com/itmare/es_lecture#%EC%84%B1%EB%8A%A5-%ED%85%8C%EC%8A%A4%ED%8A%B8-%EA%B2%B0%EA%B3%BC-%ED%95%B4%EC%84%9D)
 
 <br><br><br><br><br><br>
 
