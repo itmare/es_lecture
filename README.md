@@ -126,7 +126,7 @@ Elasticsearch 기본 개념
 
 -	apache 2.0 license에 의거
 
--	HTTP Web Interface와 Schema에 자요로운 Json형태의 도큐먼트 지원
+-	HTTP Web Interface와 Schema에 자유로운 Json형태의 도큐먼트 지원
 
 -	준 실시간 분산형 검색엔진
 
@@ -135,7 +135,7 @@ Elasticsearch 기본 개념
 -	검색엔진으로서의 ES에, 몇가지 솔수션을 추가해 분석엔진으로 활용
 -	semi-realtime 분석 엔진으로 사용 가능
 -	beats: log나 data의 원본을 elasticsearch 로 전달
--	Logstash: 직접 log를 전다랗거나 beats에서 데이터 전달받아 파싱이나 필터링하여 es에 전달
+-	Logstash: 직접 log를 전달하거나 beats에서 데이터 전달받아 파싱이나 필터링하여 es에 전달
 -	kibana: es에 수집된 데이터를 통계/집계 내어 시각화
 
 <img src="./pictures/elk_stack.png" width="700">
@@ -181,7 +181,7 @@ Elasticsearch 기본 개념
 	-	client_node
 
 		-	쿼리만을 받기 위한 노드
-		-	master,data,all node들이 쿼리를 받을 수 있기 떄문에 부하 분산용으로 쓰임
+		-	master,data,all node들이 쿼리를 받을 수 있기 때문에 부하 분산용으로 쓰임
 
 <br><br>
 
@@ -245,7 +245,7 @@ Elasticsearch 기본 개념
 -	replica shard가 있기 때문에 샤드/노드 오류가 발생하더라도 es클러스터 고가용성이 유지된다.
 -	모든 replica shard에서 병렬 방식으로 검색을 실행할 수 있으므로 검색 처리량 확장 가능
 -	단점: 인덱싱 할 때 primary샤드의 복제를 하는 과정이 추가되기 때문에
-	1.	I/O가 두배로 발생하기 떄문에 인덱싱 성능 저하
+	1.	I/O가 두배로 발생하기 때문에 인덱싱 성능 저하
 	2.	디스크 볼륨도 실제 도큐먼트의 두배 필요
 
 <kbd><img src="./pictures/shard-1.png" width="700"></kdb>
@@ -275,7 +275,7 @@ Elasticsearch 기본 개념
 #### Segment
 
 -	샤드는 다시 세그먼트로 나눠짐
--	도큐먼트가 인덱싱될 떄, 그 데이터가 시스템 버퍼 캐시 영역으로 적재됨
+-	도큐먼트가 인덱싱될 때, 그 데이터가 시스템 버퍼 캐시 영역으로 적재됨
 -	이후, 데이터를 디스크의 세그먼트에 기록
 -	이 과정에서 refresh를 거쳐야 commit point를 생성하여 검색 가능한 상태로 전환  
 
