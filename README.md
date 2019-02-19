@@ -514,6 +514,7 @@ elasticsearch 환경설정
 -	마스터 fault
 
 	-	마스터로 정의된 노드들은 각각 cluster state version을 갖고 있음
+	-	version은 클러스터에 합류한 순서, "가장 먼저 들어온 노드가 가장 클러스터의 상태를 잘 알고 있는 노드다"라는 전제
 	-	실제 마스터가 내려가면 각각의 마스터 노드들은 zen discovery에 정의된 호스트에게 ping 체크를 시작
 	-	응답이 오는 호스트 중 cluster state version이 가장 낮은 호스트를 마스터로 선출
 
@@ -523,6 +524,12 @@ elasticsearch 환경설정
 
 ##### Network 설정
 
+-	`network.host`
+	-	노드가 응답을 할 수 있는 아이피나 호스트를 설정 (`bind.host + publish_host`\)
+-	`network.bind.host`
+	-	network.host 설정에서 외부의 데이터 호출을 받는 부분만 분리
+-	`network.publish_host`
+	-	클러스터 내의 다른 노드들과 통신을 하는 부분만 분리
 -	`http.port`
 	-	http프로토콜을 통해 elasticsearch의 API를 전달할 때 사용할 포트 설정
 -	`transport.tcp.port`
@@ -553,7 +560,8 @@ elasticsearch 환경설정
 
 -	Injest Node
 
-	-	문서가 인덱싱 되기 전에 파이프라인을 통해 사전처리를 할 수 있는 role이 부여된 노드
+	-	문서가 인덱싱 되기 전에 파이프라인을 통해 사전처리를 할 수 있는 role이 부여된 노드 (default: true)
+	-	즉, 문서가 인덱싱 되기 전에 어떤 기준에 의해 파싱해서 데이터가 들어오고, 그것들을 사전 처리해서 데이터 노드에게 넘겨주는 역할
 
 	```shell
 	node.master: false
@@ -579,6 +587,8 @@ elasticsearch 환경설정
 -	`http.cors.allow-origin: "*"`
 
 	-	웹 브라우저로 접근할 수 있는 IP ACL 설정
+	-	특정 사용자들만 사용할 수 있게 설정
+	-	ex) `"10.10.10.*", "*"`
 
 <br><br>
 
@@ -811,7 +821,9 @@ elasticsearch 클러스터 운영
 -	안정적인 성능 제공을 위한 샤드 분배 방법
 -	es 운영 중 여러대로 구성된 클러스터에 노드별 용량이 상이해지는 경우가 발생한다.
 -	생성되는 인덱스의 샤드가 노드수와 동일하다면 큰 차이가 발생하지 않겠지만, 운영하다보면 노드 증설 등으로 인해 기존에 계획한대로 샤드 배치가 되지 않는다.
--	노드에 샤드가 똑같이 분배되지 않을 때에 용량 격차가 벌어진다.<img src="./pictures/shard-allocation.png" width="500">
+-	노드에 샤드가 똑같이 분배되지 않을 때에 용량 격차가 벌어진다.
+
+<img src="./pictures/shard-allocation.png" width="500">
 
 -	생성되는 index의 shard 갯수가 노드 갯수와 다를 때
 
@@ -821,23 +833,26 @@ elasticsearch 클러스터 운영
 
 	-	`POST _cluster/reroute`사용
 	-	`PUT _cluster/settings`의 disk threshold 사용
-
-<br><br>
+	-	샤드 강제 분배<br><br>
 
 ### Index setting
 
+-	static index: 인덱스가 생성될때 설정, 일부는 closed index에서도 설정
+-	dynamic index: live index에서 update-index-settings API를 사용해 변경 가능
+-	[참고](https://www.elastic.co/guide/en/elasticsearch/reference/current/index-modules.html)
+
 #### 1.Static index settings
 
--	number_of_shards
+-	`number_of_shards`: 샤드의 갯수
 
 #### 2. Dynamic index settings
 
 -	운영중 인덱스 세팅 변경
 -	RestAPI로 변경사항 요청
--	number_of_replicas: 운영중에 리플리카 샤드 갯수를 변경
--	refresh_interval: 세그먼트에 저장된 데이터를 검색할 수 있도 commit point 생성하는 주기
--	index.routing.allocation.enable: 데이터 노드에 샤드를 어떤 방식으로 할당할 것인지를 결정
--	routing.rebalance.enable: 데이터 노드에 샤드를 어떤 방식으로 재배치할 것인지를 결정
+-	`number_of_replicas`: 운영중에 리플리카 샤드 갯수를 변경
+-	`refresh_interval`: 세그먼트에 저장된 데이터를 검색할 수 있도록 commit point를 생성하는 주기
+-	`index.routing.allocation.enable`: 데이터 노드에 샤드를 어떤 방식으로 할당할 것인지를 결정
+-	`index.routing.rebalance.enable`: 데이터 노드에 샤드를 어떤 방식으로 재배치할 것인지를 결정
 
 -	차이점?
 
@@ -919,7 +934,7 @@ elasticsearch API 활용
 -	클러스터의 설정을 변경할 수 있는 클러스터 설정변경 API
 -	데이터를 이관하거나 별칭을 달 수 있는 API 등
 
-<br><br>
+<br>
 
 ### Cluster API - 클러스터 운영 API 다루기
 
@@ -930,6 +945,8 @@ elasticsearch API 활용
 	-	Transient: full cluster restart 시, 리셋되는 설정
 	-	Persistent: 사용자 변경없으면, 영구 보존되는 설정, static setting보다 우선순위가 높음
 
+<br>
+
 ### Reindex API - 데이터 마이그레이션
 
 -	POST \_reindex
@@ -937,10 +954,14 @@ elasticsearch API 활용
 -	원본 인덱스의 세팅이나 매핑은 복제되지 않는다.
 -	클러스터 내부 뿐 아니라 외부 클러스터의 인덱스도 복제 가능
 
+<br>
+
 ### Bulk API - 도큐먼트 한번에 인덱싱하기
 
 -	인덱스문서의 인덱싱, 삭제, 업데이트를 벌크로 진행할 수 있는 API
 -	Java, Python, Perl 등 언어별로 bulk api 라이브러리 제공[링크: bulk API](https://www.elastic.co/guide/en/elasticsearch/reference/current/docs-bulk.html)
+
+<br>
 
 ### 그 외 운영에 유용한 API
 
