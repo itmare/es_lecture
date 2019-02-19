@@ -285,7 +285,7 @@ Elasticsearch 기본 개념
 
 <img src="./pictures/es-data-structure.png" width="500">
 
--	각각의 샤드는 루씬 인덱
+-	각각의 샤드는 루씬 인덱스
 
 <br><br>
 
@@ -305,13 +305,13 @@ Elasticsearch 기본 개념
 
 ##### Cluster > node > index > type > document
 
--	예시1
+###### - 예시1
 
 <img src="./pictures/es-cluster-structure1.png" width="700">
 
 <br><br>
 
--	예시2
+###### - 예시2
 
 <img src="./pictures/es-cluster-structure2.png" width="700">
 
@@ -328,15 +328,6 @@ Elasticsearch 기본 개념
 
 <br><br>
 
-Elasticsearch 설치
-==================
-
--	lecture 참고
-
-<br><br><br><br><br>
-
-<br><br>
-
 Elasticsearch 기본 동작
 =======================
 
@@ -344,6 +335,13 @@ Elasticsearch 기본 동작
 
 인덱스 생성 및 삭제, 조회
 -------------------------
+
+-	기본사용 되는 커맨드
+
+```shell
+# 모든 default 설정과 함께 twitter index가 생성된다.
+PUT twitter
+```
 
 #### 인덱스 생성 3가지 방법
 
@@ -357,22 +355,50 @@ Elasticsearch 기본 동작
 	-	refresh_interval : 검색 commit point를 만드는 refresh interval 설정
 	-	index.routing.allocation.enable : 인덱스의 샤드들의 라우팅 허용 설정
 
-```shell
-ex)
-put twitter
+```java
+// ex)
+PUT twitter
 {
-    "settings": {
-            "index"{
-                "number_of_shards": 3,
-                "number_of_replicas": 1
-            }
+    "settings" : {
+        "index" : {
+            "number_of_shards" : 3,
+            "number_of_replicas" : 2
+        }
+    }
+}
+
+// 간단하게
+PUT twitter
+{
+    "settings" : {
+        "number_of_shards" : 3,
+        "number_of_replicas" : 2
     }
 }
 ```
 
-##### 2. index의 mappings를 정의
+##### 2. 인덱스의 mappings를 정의
+
+```java
+// ex)
+PUT test
+{
+    "settings" : {
+        "number_of_shards" : 1
+    },
+    "mappings" : {
+        "_doc" : {
+            "properties" : {
+                "field1" : { "type" : "text" }
+            }
+        }
+    }
+}
+```
 
 ##### 3. 사용자 정의된 도큐먼트를 인덱싱
+
+-	alias등 사용 가능
 
 <br><br>
 
@@ -407,7 +433,7 @@ Elasticsearch 프러그인
 Core Plugins
 
 -	Elasticsearch 에서 공식적으로 지원하는 플러그인
--	ES 버전이 올라갈 때마다 같이 버전 업데이트가 지원됨 권고됨
+-	ES 버전이 올라갈 때마다 같이 버전 업데이트가 지원되고 사용권고
 
 Community contributed
 
@@ -415,7 +441,7 @@ Community contributed
 
 ##### 대표적으로 elasticsearch-head, elasticsearch-HQ
 
-<br><br><br><br><br><br><br><br><br><br>
+<br><br><br><br><br>
 
 ---
 
@@ -473,7 +499,7 @@ elasticsearch 환경설정
 -	Split Brain이란?
 
 	-	마스터 후보 노드(master eligible node) 사이에 네트워크가 단절 됐을 때, 각각의 마스터 후보 노드가 마스터로 승격되어 두개의 클러스터로 동작하는 현상
-	-	클러스터 구성에서 네트워크 다널로 인해 여러개의 노드가 서로 마스터로 인식되는 증상
+	-	클러스터 구성에서 네트워크 단절로 인해 여러개의 노드가 서로 마스터로 인식되는 증상
 	-	4개의 마스터를 운영할 때에는 최소 마스터 갯수를 4/2 + 1 = 3으로 설정
 	-	2대가 내려가는 순간 클러스터를 중지시켜 split brain을 방지
 
@@ -554,7 +580,31 @@ elasticsearch 환경설정
 
 	-	웹 브라우저로 접근할 수 있는 IP ACL 설정
 
-<br>
+<br><br>
+
+#### 참고: what if... 멀티 path.data 중, 하나를 제거했을 때 (샤드계획수립의 중요성)
+
+<img src="./pictures/remove-multipath01.png">
+
+<img src="./pictures/remove-multipath02.png">
+
+<img src="./pictures/remove-multipath03.png">
+
+-	path별 샤드위치
+
+	| data1 | data2 |
+	|:-----:|:-----:|
+	|  0 2  |   1   |
+	|   4   |  1 3  |
+	| 0 3 4 |   2   |
+
+-	인덱스의 uuid, 이 디스크에 몇번 샤드가 들어있는지 확인할 수 있음 클러스터 멀티패스를 쓰더라도,
+
+-	하나의 노드에는 primary와 replica가 같이 존재 안함
+
+-	내린다음에 어떤 샤드에 이상 생길지 확인하고, 빼고, 다시 올리면 됨, 다른노드에 있는 똑같은 샤드가 다시 복제됨
+
+<br><br>
 
 ### 2. static settings: jvm.options
 
