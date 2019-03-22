@@ -211,7 +211,7 @@ Elasticsearch 기본 개념
 
 <br><br>
 
-#### document
+#### Document
 
 -	es 저장 기본단위
 -	RDB의 columns나 rows와 비슷한 개념
@@ -411,6 +411,10 @@ PUT test
 -	프라이머리 샤드가 항상 먼저 writing된다.
 -	프라이머리 샤드의 writing이 전부 완료된 후, 리플리카 샤드로 복제를 시작한다.
 
+<br>
+
+#### 문서 인덱싱
+
 <img src="./pictures/index-writing.png" width="600">
 
 -	인덱스 쓰기<br><br>
@@ -495,6 +499,8 @@ elasticsearch 환경설정
 	-	최소 마스터 갯수 설정
 	-	(마스터노드 갯수 / 2) + 1 개 설정
 	-	해당 노드 갯수만큼 마스터가 내려가면 데이터 무결성을 위해 클러스터 중지
+
+<br>
 
 -	Split Brain이란?
 
@@ -592,7 +598,7 @@ elasticsearch 환경설정
 
 <br><br>
 
-#### 참고: what if... 멀티 path.data 중, 하나를 제거했을 때 (샤드계획수립의 중요성)
+#### 참고: what if... 멀티 path.data 중, 하나를 제거했을 때 (awareness)
 
 <img src="./pictures/remove-multipath01.png">
 
@@ -837,7 +843,7 @@ elasticsearch 클러스터 운영
 
 ### Index setting
 
--	static index: 인덱스가 생성될때 설정, 일부는 closed index에서도 설정
+-	static index: 인덱스가 생성될때 설정, 일부는 closed index에서 설정 가능
 -	dynamic index: live index에서 update-index-settings API를 사용해 변경 가능
 -	[참고](https://www.elastic.co/guide/en/elasticsearch/reference/current/index-modules.html)
 
@@ -959,7 +965,7 @@ elasticsearch API 활용
 ### Bulk API - 도큐먼트 한번에 인덱싱하기
 
 -	인덱스문서의 인덱싱, 삭제, 업데이트를 벌크로 진행할 수 있는 API
--	Java, Python, Perl 등 언어별로 bulk api 라이브러리 제공[링크: bulk API](https://www.elastic.co/guide/en/elasticsearch/reference/current/docs-bulk.html)
+-	Java, Python, Perl 등 언어별로 bulk api 라이브러리 제공 [링크: bulk API](https://www.elastic.co/guide/en/elasticsearch/reference/current/docs-bulk.html)
 
 <br>
 
@@ -978,7 +984,9 @@ elasticsearch API 활용
 	-	인덱스의 상태를 open/close 할 수 있는 API
 	-	close된 인덱스는 read/write 불가
 	-	클러스터 전체 샤드에서 제외
-	-	라우팅 disabled<img src="./pictures/close-api.png" width="600">
+	-	라우팅 disabled
+
+<img src="./pictures/close-api.png">
 
 <br><br><br><br><br><br><br><br><br><br>
 
