@@ -551,7 +551,7 @@ elasticsearch 환경설정
 	```shell
 	node.master: true
 	node.data: false
-	node.injest: false
+	node.ingest: false
 	```
 
 -	Data Node
@@ -561,18 +561,19 @@ elasticsearch 환경설정
 	```shell
 	node.master: false
 	node.data: true
-	node.injest: false
+	node.ingest: false
 	```
 
--	Injest Node
+-	Ingest Node
 
 	-	문서가 인덱싱 되기 전에 파이프라인을 통해 사전처리를 할 수 있는 role이 부여된 노드 (default: true)
 	-	즉, 문서가 인덱싱 되기 전에 어떤 기준에 의해 파싱해서 데이터가 들어오고, 그것들을 사전 처리해서 데이터 노드에게 넘겨주는 역할
+	-	indexing 전에, processor를 순서대로 나열한 pipeline을 정의한다. [processor list](https://www.elastic.co/guide/en/elasticsearch/reference/current/ingest-processors.html)
 
 	```shell
 	node.master: false
 	node.data: false
-	node.injest: true
+	node.ingest: true
 	```
 
 -	Coordinate Node
@@ -582,7 +583,7 @@ elasticsearch 환경설정
 	```shell
 	node.master: false
 	node.data: false
-	node.injest: false
+	node.ingest: false
 	```
 
 -	`http.cors.enabled: true`
@@ -839,7 +840,9 @@ elasticsearch 클러스터 운영
 
 	-	`POST _cluster/reroute`사용
 	-	`PUT _cluster/settings`의 disk threshold 사용
-	-	샤드 강제 분배<br><br>
+	-	샤드 강제 분배
+
+<br><br>
 
 ### Index setting
 
@@ -847,7 +850,7 @@ elasticsearch 클러스터 운영
 -	dynamic index: live index에서 update-index-settings API를 사용해 변경 가능
 -	[참고](https://www.elastic.co/guide/en/elasticsearch/reference/current/index-modules.html)
 
-#### 1.Static index settings
+#### 1. Static index settings
 
 -	`number_of_shards`: 샤드의 갯수
 
@@ -875,6 +878,8 @@ elasticsearch 클러스터 운영
 
 	-	그중, Mapping
 
+<br><br>
+
 #### Mapping
 
 -	document가 indexing 될 때, doc과 doc에 포함된 field들을 어떻게 저장할지를 결정하는 과정
@@ -884,17 +889,104 @@ elasticsearch 클러스터 운영
 -	Static mapping
 	-	사용자가 정의한 스키마를 기준으로 mapping
 
-##### Dynamic Mapping Field
+<br>
 
-| Value Type            | mapping Field / Description         |
+-	Mapping 할때
+
+```shell
+# mapping first (create index)
+PUT my_index
+{
+	"mappings":{
+		"_doc":{
+			"properties":{
+				"my_field":{
+					"type": "text"
+				}
+			}
+		}
+	}
+}
+
+# mapping update
+PUT my_index/_mapping/_doc
+{
+	"properties":{
+		"my_field":{
+			"type": "text"
+		}
+	}
+}
+
+# mappig with dataset (create index with dataset)
+PUT my_index/_doc/1
+{
+	"my_field": "hello world"
+	...
+}
+
+
+```
+
+##### 1. Dynamic field Mapping
+
+| JSON Value Type       | mapping Field / Description         |
 |:---------------------:|:-----------------------------------:|
 |         null          |          No field is added          |
 |     true of false     |            boolean field            |
-| floating point number |              log field              |
+| floating point number |          float field(log)           |
+|        integer        |             long field              |
 |        object         |            object field             |
 |         array         |       string or object field        |
 |      data string      |        double or long field         |
 |      text string      | text field with a keyword sub-field |
+
+##### 2. Dynamic template
+
+-	field기반으로 다이나믹하게 적용되는 custom mapping을 정의 할 수 있다.
+
+```shell
+# example
+PUT my_index
+{
+	"mappings":{
+		"_doc":{
+			"dynamic_templates":[
+				{
+					"my_template_1":{
+						"match_mapping_type": ...
+					}
+				},
+				{
+					"my_template_2":{
+						"match": ...
+					}
+				}
+			]
+		}
+	}
+}
+```
+
+-	`match_mapping_type`
+
+-	`match`
+
+-	`match_pattern`
+
+-	`path_match`
+
+-	`path_unmatch`
+
+| 이름                 | 분류             | 설명                                                                |
+|:--------------------:|:----------------:|:-------------------------------------------------------------------:|
+| `match_mapping_type` |     datatype     |                json parser로 부터 detect된 datatype                 |
+|       `match`        |  name of field   |               field name과 매치하기 위한 패턴을 사용                |
+|      `unmatch`       |  name of field   |               field name과 매치되지 않는 패턴을 사용                |
+|   `match_pattern`    |  name of field   |               regex를 활용해서 `match`의 행위를 조절                |
+|     `path_match`     | full dotted path |  `match`와 같지만, full dotted path (eg. some_object.*.some_field)  |
+|    `path_unmatch`    | full dotted path | `unmatch`와 같지만, full dotted path (eg. some_object.*.some_field) |
+|      `mapping`       |     mapping      |                         기존 mapping과 동일                         |
 
 <br><br>
 
@@ -1247,6 +1339,7 @@ PUT keyword_index
 	-	메일 본문같은 긴 내용은 집계/통계를 내기 어려운 데이터
 	-	수치나 특정 문자로 한정된 데이터들의 집계를 내는 역할
 	-	kibana에서 집계/통계를 낼 때 주로 사용
+	-	SQL GROUP BY나 SQL 집계 기능과 대략 같다고 생각  
 
 <br><br>
 
