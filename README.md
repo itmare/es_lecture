@@ -953,13 +953,15 @@ PUT my_index
 		"_doc":{
 			"dynamic_templates":[
 				{
-					"my_template_1":{
-						"match_mapping_type": ...
+					"my_template_1":{   ##=> 1)
+						"match_mapping_type": ...  ##=> 2)
+						"mapping": { ... }  ##=> 3)
 					}
 				},
 				{
-					"my_template_2":{
-						"match": ...
+					"my_template_2":{  ##=> 1)
+						"match": ...  ##=> 2)
+						"mapping": { ... }  ##=> 3)
 					}
 				}
 			]
@@ -968,15 +970,9 @@ PUT my_index
 }
 ```
 
--	`match_mapping_type`
-
--	`match`
-
--	`match_pattern`
-
--	`path_match`
-
--	`path_unmatch`
+-	1) template name 마음대로 정하기
+-	2) match condition 포함할 수 있다. (`match_mapping_type`, `match`, `match_pattern`, `unmatch`, `path_match`, `path_unmatch`\)
+-	3) matched field가 사용 할 mapping
 
 | 이름                 | 분류             | 설명                                                                |
 |:--------------------:|:----------------:|:-------------------------------------------------------------------:|
@@ -1057,6 +1053,7 @@ elasticsearch API 활용
 ### Bulk API - 도큐먼트 한번에 인덱싱하기
 
 -	인덱스문서의 인덱싱, 삭제, 업데이트를 벌크로 진행할 수 있는 API
+-	사용가능한 action은 `index`, `create`, `delete`, `update`
 -	Java, Python, Perl 등 언어별로 bulk api 라이브러리 제공 [링크: bulk API](https://www.elastic.co/guide/en/elasticsearch/reference/current/docs-bulk.html)
 
 <br>
@@ -1127,6 +1124,8 @@ Elasticsearch 검색엔진 활용 및 성능 최적화와 모니터링
 		-	원본 text 가공
 		-	설정하지 않거나 다중으로 필터 설정 가능
 		-	ex) html 태그 제거, 패턴 매칭(123-456-789 ==> 123_456_789)
+		-	`html_strip`, `mapping`, `pattern_replace`
+		-	[custom analyzers](https://www.elastic.co/guide/en/elasticsearch/reference/current/analysis-custom-analyzer.html)
 
 	-	Tokenizer
 
@@ -1134,12 +1133,14 @@ Elasticsearch 검색엔진 활용 및 성능 최적화와 모니터링
 		-	tokenizing 된 term은 token 이라 부름
 		-	하나의 tokenizer만 설정 가능
 		-	ex) space가 기준일때: You are a boy!!! ==> You / are / a / boy!!!
+		-	`standard`, `letter`, `lowercase`, `whitespace` 등등
 
 	-	Token filters
 
-		-	tokenizer에 의해 결정된 koten들에 대한 가공
+		-	tokenizer에 의해 결정된 token들에 대한 가공
 		-	설정하지 않거나 다중으로 필터 설정 가능
 		-	ex) stopword제거: You / are / a / boy ==> you / boy
+		-	lowercasing, stopwords, synonyms
 
 -	Analyzer
 
@@ -1152,11 +1153,18 @@ Elasticsearch 검색엔진 활용 및 성능 최적화와 모니터링
 
 -	**Analyzer를 변경하면 반드시 \_reindex 필요**
 
+-	template
+
+```shell
+analysis
+
+```
+
 -	참고 링크
 
-	-	[Character filters](https://www.elastic.co/guide/en/elasticsearch/reference/6.5/analysis-charfilters.html)
-	-	[Tokenizer](https://www.elastic.co/guide/en/elasticsearch/reference/6.4/analysis-tokenizers.html)
-	-	[Token filters](https://www.elastic.co/guide/en/elasticsearch/reference/6.4/analysis-tokenfilters.html)
+	-	[Character filters](https://www.elastic.co/guide/en/elasticsearch/reference/current/analysis-charfilters.html)
+	-	[Tokenizer](https://www.elastic.co/guide/en/elasticsearch/reference/current/analysis-tokenizers.html)
+	-	[Token filters](https://www.elastic.co/guide/en/elasticsearch/reference/current/analysis-tokenfilters.html)
 
 <br><br><br><br>
 
@@ -1179,9 +1187,11 @@ GET /_search
 }
 ```
 
+<br>
+
 #### Query Phase of distributed search
 
--	쿼리를 받아 문서가 어떤 node의 어떤 shard에 있는지 찾는 과정
+-	쿼리를 받아, 문서가 어떤 node의 어떤 shard에 있는지 찾는 과정
 -	from, size를 계산하여 빈 queue를 생성
 -	전체 node, shard에 문서가 있는지를 확인, node들도 로컬에 queue를 생성
 -	queue에 검색된 문서의 id를 넣고 결과를 sorting 후 결과 리턴
@@ -1260,6 +1270,11 @@ GET /_search
 		2.	filter: 문서에 일치하는 항목, 스코어 0, filter context에서 보통 실행
 		3.	should: 문서에 일치하는 항목, must나 filter항목이 없으면 적어도 하나의 쿼리절과 일치되는 결과 리턴
 		4.	must_not: 문서에 일치하지 않는 항목
+	-	다른 설명
+		1.	must : 반드시 매칭되는 조건, score에 영향을 준다.
+		2.	filter : must와 동일한 동작하지만, score에 영향을 주지 않는다.
+		3.	should : bool 쿼리가 query context에 있고 must 또는 filter 절이 있다면, should 쿼리와 일치하는 결과가 없더라도 매치가 된다. bool 쿼리가 filter context 안에 있거나, must 또는 filter 중에 하나라도 있는 경우에만 매칭된다. minimum_should_match 이 값을 지정해서 컨트롤할 수 있다.
+		4.	must_not : 이 쿼리와 매칭되지 않아야 한다.
 
 -	[링크: Query DSL](https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl.html)
 
