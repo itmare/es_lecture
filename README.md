@@ -317,8 +317,8 @@ Elasticsearch 기본 개념
 
 | 이름     | 개수 |
 |:--------:|:----:|
-| instance |  3   |
 |  index   |  1   |
+| instance |  3   |
 |  shard   |  4   |
 | replica  |  2   |
 
@@ -353,7 +353,7 @@ PUT twitter
 
 	-	number_of_replicas : replica 샤드 갯수 설정
 	-	refresh_interval : 검색 commit point를 만드는 refresh interval 설정
-	-	index.routing.allocation.enable : 인덱스의 샤드들의 라우팅 허용 설정
+	-	cluster.routing.allocation.enable : 인덱스의 샤드들의 라우팅 허용 설정
 
 ```java
 // ex)
@@ -597,9 +597,13 @@ elasticsearch 환경설정
 	-	특정 사용자들만 사용할 수 있게 설정
 	-	ex) `"10.10.10.*", "*"`
 
+-	참고: cors (Cross-Origin Resource Sharing)
+
+	-	만약 다른 사이트로 부터 데이터를 요청하길 원한다면, CORS를 enable해야 한다.
+
 <br><br>
 
-#### 참고: what if... 멀티 path.data 중, 하나를 제거했을 때 (awareness)
+#### 참고: what if... 멀티 path.data 중, 하나를 제거했을 때 (awareness로 해결??)
 
 <img src="./pictures/remove-multipath01.png">
 
@@ -860,8 +864,8 @@ elasticsearch 클러스터 운영
 -	RestAPI로 변경사항 요청
 -	`number_of_replicas`: 운영중에 리플리카 샤드 갯수를 변경
 -	`refresh_interval`: 세그먼트에 저장된 데이터를 검색할 수 있도록 commit point를 생성하는 주기
--	`index.routing.allocation.enable`: 데이터 노드에 샤드를 어떤 방식으로 할당할 것인지를 결정
--	`index.routing.rebalance.enable`: 데이터 노드에 샤드를 어떤 방식으로 재배치할 것인지를 결정
+-	`cluster.routing.allocation.enable`: 데이터 노드에 샤드를 어떤 방식으로 할당할 것인지를 결정
+-	`cluster.routing.rebalance.enable`: 데이터 노드에 샤드를 어떤 방식으로 재배치할 것인지를 결정
 
 -	차이점?
 
