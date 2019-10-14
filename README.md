@@ -864,8 +864,8 @@ elasticsearch 클러스터 운영
 -	RestAPI로 변경사항 요청
 -	`number_of_replicas`: 운영중에 리플리카 샤드 갯수를 변경
 -	`refresh_interval`: 세그먼트에 저장된 데이터를 검색할 수 있도록 commit point를 생성하는 주기
--	`cluster.routing.allocation.enable`: 데이터 노드에 샤드를 어떤 방식으로 할당할 것인지를 결정
--	`cluster.routing.rebalance.enable`: 데이터 노드에 샤드를 어떤 방식으로 재배치할 것인지를 결정
+-	`routing.allocation.enable`: 데이터 노드에 샤드를 어떤 방식으로 할당할 것인지를 결정
+-	`routing.rebalance.enable`: 데이터 노드에 샤드를 어떤 방식으로 재배치할 것인지를 결정
 
 -	차이점?
 
