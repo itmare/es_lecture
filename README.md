@@ -1060,6 +1060,9 @@ elasticsearch API 활용
 
 -	인덱스문서의 인덱싱, 삭제, 업데이트를 벌크로 진행할 수 있는 API
 -	사용가능한 action은 `index`, `create`, `delete`, `update`
+-	`index`, `create` action: 다음 라인에는 source가 와야한다.
+-	`update` action: 변경할 source를 다음 라인에 `"doc"`과 함께 추가
+-	`delete` action: source추가 필요없음
 -	Java, Python, Perl 등 언어별로 bulk api 라이브러리 제공 [링크: bulk API](https://www.elastic.co/guide/en/elasticsearch/reference/current/docs-bulk.html)
 
 <br>
