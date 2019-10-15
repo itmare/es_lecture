@@ -1131,7 +1131,7 @@ Elasticsearch 검색엔진 활용 및 성능 최적화와 모니터링
 
 	-	character filters
 
-		-	0~3개
+		-	0~3개 사용가능, 대괄호(`[ ]`) 안에 들어감
 		-	원본 text 가공
 		-	설정하지 않거나 다중으로 필터 설정 가능
 		-	ex) html 태그 제거, 패턴 매칭(123-456-789 ==> 123_456_789)
@@ -1140,7 +1140,7 @@ Elasticsearch 검색엔진 활용 및 성능 최적화와 모니터링
 
 	-	Tokenizer
 
-		-	1개
+		-	1개만 사용
 		-	어떤 방식으로 원본 text를 tokenizing 할지 결정
 		-	tokenizing 된 term은 token 이라 부름
 		-	하나의 tokenizer만 설정 가능
@@ -1149,7 +1149,7 @@ Elasticsearch 검색엔진 활용 및 성능 최적화와 모니터링
 
 	-	Token filters
 
-		-	0~n개
+		-	0~n개 사용가능, 대괄호(`[ ]`) 안에 들어감
 		-	tokenizer에 의해 결정된 token들에 대한 가공
 		-	설정하지 않거나 다중으로 필터 설정 가능
 		-	다중 필터 사용시, 순서 중요, 만약 `stop` 필터를 `lowercase`보다 앞에 위치하면, the로 시작하는 문장의 "The"를 고유명사로 인식하여 필터링 되지 않는다.
