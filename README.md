@@ -1060,7 +1060,7 @@ elasticsearch API 활용
 
 -	인덱스문서의 인덱싱, 삭제, 업데이트를 벌크로 진행할 수 있는 API
 -	사용가능한 action은 `index`, `create`, `delete`, `update`
--	`index`, action: 다음 라인에는 source가 와야한다. 해당 doc id가 존재하면, doc 업데이트
+-	`index` action: 다음 라인에는 source가 와야한다. 해당 doc id가 존재하면, doc 업데이트
 -	`create` action: 다음 라인에는 source가 와야한다. 해당 doc id가 존재하면, 실행 실패
 -	`update` action: 변경할 source를 다음 라인에 `"doc"`과 함께 추가, 해당 doc id가 없으면 ( `"result" : "not_found"` )
 -	`delete` action: source추가 필요없음
@@ -1131,6 +1131,7 @@ Elasticsearch 검색엔진 활용 및 성능 최적화와 모니터링
 
 	-	character filters
 
+		-	0~3개
 		-	원본 text 가공
 		-	설정하지 않거나 다중으로 필터 설정 가능
 		-	ex) html 태그 제거, 패턴 매칭(123-456-789 ==> 123_456_789)
@@ -1139,6 +1140,7 @@ Elasticsearch 검색엔진 활용 및 성능 최적화와 모니터링
 
 	-	Tokenizer
 
+		-	1개
 		-	어떤 방식으로 원본 text를 tokenizing 할지 결정
 		-	tokenizing 된 term은 token 이라 부름
 		-	하나의 tokenizer만 설정 가능
@@ -1147,8 +1149,10 @@ Elasticsearch 검색엔진 활용 및 성능 최적화와 모니터링
 
 	-	Token filters
 
+		-	0~n개
 		-	tokenizer에 의해 결정된 token들에 대한 가공
 		-	설정하지 않거나 다중으로 필터 설정 가능
+		-	다중 필터 사용시, 순서 중요, 만약 `stop` 필터를 `lowercase`보다 앞에 위치하면, the로 시작하는 문장의 "The"를 고유명사로 인식하여 필터링 되지 않는다.
 		-	ex) stopword제거: You / are / a / boy ==> you / boy
 		-	lowercasing, stopwords, synonyms
 
