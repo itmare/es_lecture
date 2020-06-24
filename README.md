@@ -168,20 +168,28 @@ Elasticsearch 기본 개념
 -	노드는 각자의 node_name과 node_uuid를 갖는다.
 -	역할에 따라 여러가지 노드로 사용
 
-	-	master_node
+	-	master node
+
 		-	클러스터 구성의 기준
 		-	구성 노드들의 헬스 체크를 담당
-	-	data_node
+
+	-	data node
+
 		-	실제 데이터가 적재되고 클라이언트의 요청에 데이터 리턴을 담당
-	-	all_node
+
+	-	all node
 
 		-	master와 data의 구분이 필요없을때, 두가지 역할을 전부 담당
 		-	확장이 거의 필요없고 비용 절감을 위해 사용
 
-	-	client_node
+	-	client node
 
 		-	쿼리만을 받기 위한 노드
 		-	master,data,all node들이 쿼리를 받을 수 있기 때문에 부하 분산용으로 쓰임
+
+	-	ingest node
+
+		-	인덱싱할때 데이터의 전처리를 위한 노드
 
 <br><br>
 
