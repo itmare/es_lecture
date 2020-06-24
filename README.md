@@ -281,6 +281,15 @@ Elasticsearch 기본 개념
 
 <br><br>
 
+#### es 구성
+
+-	physical 구성
+	-	cluster > Node > Indice > Shard
+-	logical 구성
+	-	Index > Type > Document > field:value
+
+<br><br>
+
 #### es 데이터 구조
 
 <img src="./pictures/es-data-structure.png" width="500">
